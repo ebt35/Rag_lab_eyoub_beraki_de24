@@ -6,7 +6,7 @@ import asyncio
 
 app = FastAPI(title="RAG API")
 
-# Allow Streamlit frontend
+# allow Streamlit frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,12 +14,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Memory storage
+# memory storage
 chat_history: list[History] = []
 rag_cache = {}  # Caching dictionary
 
 
-# ----------- CACHED RAG ----------
+# casched rag
 async def cached_rag(prompt: str) -> RagResponse:
     """Return cached result or compute and store new one."""
     if prompt in rag_cache:
@@ -31,7 +31,7 @@ async def cached_rag(prompt: str) -> RagResponse:
     return result.output
 
 
-# ----------- QUERY ENDPOINT ----------
+# query endpoint
 @app.post("/rag/query", response_model=RagResponse)
 async def query_documentation(query: Prompt):
     global chat_history
@@ -45,13 +45,13 @@ async def query_documentation(query: Prompt):
     return result
 
 
-# ----------- HISTORY ENDPOINT ----------
+# hostory endpoint
 @app.get("/rag/history")
 async def get_history():
     return chat_history
 
 
-# ----------- RESET ENDPOINT ----------
+# reset endpoint
 @app.post("/rag/reset")
 async def reset_chat():
     global chat_history, rag_cache
