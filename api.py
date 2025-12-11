@@ -1,61 +1,42 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from backend.data_models import Prompt, RagResponse, History
 from backend.rag import rag_agent
-import asyncio
+from backend.data_models import Prompt, History, RagResponse
+from typing import List
 
-app = FastAPI(title="RAG API")
+app = FastAPI()
 
-# allow Streamlit frontend
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# memory storage
-chat_history: list[History] = []
-rag_cache = {}  # Caching dictionary
+chat_history: List[History] = []
 
 
-# casched rag
-async def cached_rag(prompt: str) -> RagResponse:
-    """Return cached result or compute and store new one."""
-    if prompt in rag_cache:
-        return rag_cache[prompt]
-
-    result = await rag_agent.run(prompt)  # IMPORTANT: async/await, NOT asyncio.run()
-
-    rag_cache[prompt] = result.output
-    return result.output
-
-
-# query endpoint
 @app.post("/rag/query", response_model=RagResponse)
 async def query_documentation(query: Prompt):
     global chat_history
 
     chat_history.append(History(role="user", content=query.prompt))
 
-    result = await cached_rag(query.prompt)
+    message_history = [
+        {"role": h.role, "content": h.content}
+        for h in chat_history
+    ]
 
-    chat_history.append(History(role="assistant", content=result.answer))
+    result = await rag_agent.run(
+        query.prompt,
+        message_history=message_history,
+    )
 
-    return result
+    answer = result.output.answer
+    chat_history.append(History(role="assistant", content=answer))
+
+    return result.output
 
 
-# hostory endpoint
-@app.get("/rag/history")
+@app.get("/rag/history", response_model=List[History])
 async def get_history():
     return chat_history
 
 
-# reset endpoint
 @app.post("/rag/reset")
 async def reset_chat():
-    global chat_history, rag_cache
-    chat_history.clear()
-    rag_cache.clear()
+    global chat_history
+    chat_history = []
     return {"status": "history cleared"}
-
