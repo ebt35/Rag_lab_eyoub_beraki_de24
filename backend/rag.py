@@ -3,37 +3,47 @@ from backend.data_models import RagResponse
 from backend.constants import VECTOR_DB_PATH
 import lancedb
 
-
+# Connect to LanceDB
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
+# The youtuber personality
+YOUTUBER_PERSONA = """
+You are The Youtuber – a passionate educator who teaches hundreds through video tutorials.
+You also happen to be an expert in Data Engineering.
 
+Your teaching style is:
+- friendly
+- joyful
+- enthusiastic
+- simplified and clear
+
+Rules:
+- Always answer based on the retrieved video transcript knowledge, but you may add your expertise for clarity.
+- Do NOT hallucinate. If the answer is not in the transcripts, politely say so.
+- Answer clearly and concisely — max 6 sentences.
+- Always include which file you used as the source.
+"""
+
+# Create agent
 rag_agent = Agent(
     model="google-gla:gemini-2.5-flash",
     retries=2,
-    system_prompt=(
-        "You are an expert in Data Engineering",
-        "Always answer based on the retrieved knowledge, but you can mix in your expertise to make the answer more coherent",
-        "Don't hallucinate, rather say you can't answer it if the user prompts outside of the retrieved knowledge",
-        "Make sure tho keep the answer clear and concise, getting to the point directly, max 6 sentences",
-        "Also describe which file you have used as source",
-    ),
+    system_prompt=YOUTUBER_PERSONA,
     output_type=RagResponse,
 )
 
-
 @rag_agent.tool_plain
 def retrieve_top_documents(query: str, k=3) -> str:
-    """
-    Uses vector search to find the closest k matching documents to the query
-    """
-    results = vector_db["articles"].search(query=query).limit(k).to_list()
+    """Vector search for closest transcript documents."""
+    results = vector_db["transcripts"].search(query=query).limit(k).to_list()
+
+    if not results:
+        return "No matching documents found."
+
+    doc = results[0]
 
     return f"""
-    
-    Filename: {results[0]["filename"]},
-    
-    Filepath: {results[0]["filepath"]},
-
-    Content: {results[0]["content"]}
-    
-    """
+Filename: {doc['filename']}
+Filepath: {doc['filepath']}
+Content: {doc['content']}
+"""

@@ -9,7 +9,7 @@ embedding_model = get_registry().get("gemini-text").create(name= "gemini-embeddi
 
 EMBEDDINNG_DIM = 3072
 
-class TranScript(LanceModel):
+class Transcript(LanceModel):
     doc_id: str
     filepath: str 
     filename: str = Field(description="the stem of the file, i. e without the suffix ")
@@ -24,3 +24,7 @@ class RagResponse(BaseModel):
     filename: str = Field(description="filename of retrieved filepath without suffix")
     filepath: str = Field(description= "absolute path to retrieved file")
     answer: str = Field(description="answer based retrieved file")
+
+class History(BaseModel):
+    role:str
+    content:str
