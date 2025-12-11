@@ -6,7 +6,7 @@ st.set_page_config(page_title="Youtuber RAG Bot")
 
 API_URL = "http://127.0.0.1:8000"
 
-# Avatar image
+# avatar image
 ASSETS_PATH = Path(__file__).absolute().parents[1] / "assets"
 AVATAR = ASSETS_PATH / "image.png"
 
@@ -29,13 +29,13 @@ def layout():
     if st.button("Send") and user_input.strip():
         ask_api(user_input)
 
-    # Fetch history
+    # fetch history
     history = requests.get(f"{API_URL}/rag/history").json()
 
     st.header("Chat History")
 
-    for msg in history:
-        if msg["role"] == "user":
+    for message in history:
+        if message["role"] == "user":
             st.markdown(f"**You:** {msg['content']}")
         else:
             col1, col2 = st.columns([1, 9])
