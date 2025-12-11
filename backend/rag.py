@@ -3,7 +3,7 @@ from backend.data_models import RagResponse
 from backend.constants import VECTOR_DB_PATH
 import lancedb
 
-# Connect to LanceDB
+# connect to LanceDB
 vector_db = lancedb.connect(uri=VECTOR_DB_PATH)
 
 # The youtuber personality
@@ -24,7 +24,7 @@ Rules:
 - Always include which file you used as the source.
 """
 
-# Create agent
+# create agent
 rag_agent = Agent(
     model="google-gla:gemini-2.5-flash",
     retries=2,
