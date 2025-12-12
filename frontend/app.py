@@ -1,29 +1,50 @@
 import streamlit as st
 import requests
-from dotenv import load_dotenv
 import os 
+from dotenv import load_dotenv
 
 load_dotenv()
 
-st.set_page_config(page_title="Youtuber RAG Bot")
-
 URL = f"https://ragbot-ebt.azurewebsites.net/rag/query?code={os.getenv('FUNCTION_APP_API')}"
+
+ASSISTANT_AVATAR = "assets/assistant.png"
+
 
 def layout():
     st.title("The Youtuber – A cool Chatbot")
-    text_input = st.text_input("Ask a question:")
+    st.caption("Ask any data engineering related question")
 
-    if st.button("Send") and text_input.strip():
-        response = requests.post(URL, json={"prompt": text_input})
+    st.session_state.setdefault(
+        "messages", [{"role": "assistant", "content": "How can I help you?"}]
+    )
 
-        data =response.json()
+    for message in st.session_state.messages:
+        if message["role"] == "assistant":
+            st.chat_message(
+                "assistant", avatar=ASSISTANT_AVATAR#LLM
+            ).write(message["content"])
+        else:
+            st.chat_message("user").write(message["content"])
 
-        if response.status_code != 200:
-            st.error("API error")
-            return
-        
-        answer = response.json().get("answer", "No answer returned")
-        st.markdown(f"**Youtuber:** {answer}")
+    prompt = st.chat_input("Ask a question")
+    if prompt:
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        st.chat_message("user").write(prompt)
+
+        response = requests.post(URL, json={"prompt": prompt})
+        response.raise_for_status()
+
+        data = response.json()
+        answer = data.get("answer")
+        source = data.get("filepath")
+
+        st.session_state.messages.append({"role": "assistant", "content": answer})
+
+        with st.chat_message("assistant", avatar=ASSISTANT_AVATAR): #LLM
+            st.write(answer)
+            if source:
+                st.caption(f"Source: {source}")
+
 
 if __name__ == "__main__":
     layout()
