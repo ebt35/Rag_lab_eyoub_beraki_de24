@@ -12,6 +12,17 @@ The project is built as part of a lab assignment and demonstrates ingestion, vec
 * Deployed backend using Azure Functions
 * imple and clean Streamlit UI
 
+## Tech Stack
+
+* PydanticAI – AI agent & structured outputs
+* Azure Functions – serverless backend
+* FastAPI – API framework (lokalt)
+* Streamlit – frontend UI
+* LanceDB – vector database
+* Google Gemini – LLM & embeddings
+* Python – programmeringsspråk
+* uv – package manager
+
 ## Arcitecture Overview
 ```
 User (Streamlit UI)
@@ -102,6 +113,18 @@ Use this option if you want to run and test everything locally.
    ```uv run streamlit run frontend/app.py```
 * Open the UI at: http://localhost:8501
 
+## Deployment
+
+The backend API is deployed using **Azure Functions.**
+
+**Live API endpoint**
+```
+https://ragbot-ebt.azurewebsites.net/rag/query
+```
+
+The API accepts **POST requests only** and is accessed using an Azure Function key.
+
+The Streamlit frontend communicates with the deployed backend via this endpoint.
 
 ## Project Structure
 
