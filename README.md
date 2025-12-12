@@ -4,13 +4,18 @@ The system retrieves relevant video transcripts from a vector database and gener
 
 The project is built as part of a lab assignment and demonstrates ingestion, vector search, API deployment and a simple frontend.
 
+## Demo
+
+<img src="bild/chatbot.png" alt="Chatbot demo" width="700">
+
+
 ## Features
 
 * Ask natural language questions about YouTube-style tutorials
 * Retrieval-Augmented Generation (RAG) pipeline
 * Vector search using LanceDB
 * Deployed backend using Azure Functions
-* imple and clean Streamlit UI
+* Simple and clean Streamlit UI
 
 ## Tech Stack
 
@@ -20,10 +25,10 @@ The project is built as part of a lab assignment and demonstrates ingestion, vec
 * Streamlit – frontend UI
 * LanceDB – vector database
 * Google Gemini – LLM & embeddings
-* Python – programmeringsspråk
+* Python – programming language
 * uv – package manager
 
-## Arcitecture Overview
+## Architecture Overview
 ```
 User (Streamlit UI)
         ↓
@@ -79,7 +84,7 @@ This step will:
 * Generate embeddings using Google Gemini embedding model
 * Ingest and store all video transcript documents
 
-## Running Application
+## Running the Application
 There are two ways to run the application:
 
 Using the **deployed Azure Function API** or **locally with fastAPI**
@@ -94,7 +99,7 @@ uv run streamlit run frontend/app.py
 * The frontend connects directly to the deployed Azure Functions API
 * No local backend setup is required
   
-**Option2: Local development with FastAPI**
+**Option 2: Local development with FastAPI**
 
 Use this option if you want to run and test everything locally.
 1. **Run the FastAPI backend**
@@ -107,7 +112,9 @@ Use this option if you want to run and test everything locally.
 
    In ```frontend/app.py```, change the API URL to:
 
-    ```URL = "http://127.0.0.1:8000/rag/query"```
+    ```python
+    URL = "http://127.0.0.1:8000/rag/query"
+    ```
 
 3. **Start the Streamlit frontend**
    ```uv run streamlit run frontend/app.py```
@@ -125,6 +132,7 @@ https://ragbot-ebt.azurewebsites.net/rag/query
 The API accepts **POST requests only** and is accessed using an Azure Function key.
 
 The Streamlit frontend communicates with the deployed backend via this endpoint.
+
 
 ## Project Structure
 
