@@ -1,19 +1,21 @@
 import streamlit as st
 import requests
+from dotenv import load_dotenv
+import os 
+
+load_dotenv()
 
 st.set_page_config(page_title="Youtuber RAG Bot")
 
-URL = "http://127.0.0.1:8000"
+URL = f"https://ragbot-ebt.azurewebsites.net/rag/query?code={os.getenv('FUNCTION_APP_API')}"
 
 def layout():
     st.title("The Youtuber – A cool Chatbot")
     text_input = st.text_input("Ask a question:")
 
     if st.button("Send") and text_input.strip():
-        response = requests.post(
-            f"{URL}/rag/query",
-            json={"prompt": text_input}
-        )
+        response = requests.post(URL, json={"prompt": text_input})
+
         data =response.json()
 
         if response.status_code != 200:
