@@ -24,18 +24,14 @@ rag_agent = Agent(
 
 @rag_agent.tool_plain
 def retrieve_top_documents(query: str, k=3) -> str:
-    """Uses vector search to find the closest documents and returns the entire transcript."""
+    """
+    Uses vector search to find the closest k matching video transcripts to the query
+    """
     results = vector_db["transcripts"].search(query=query).limit(k).to_list()
-
-    if not results:
-        return "No matching transcript found."
-
-    doc = results[0]
+    top_result = results[0]
 
     return f"""
-Filename: {doc["filename"]}
-Filepath: {doc["filepath"]}
-
-Content:
-{doc["content"]}
-"""
+    Video Title: {top_result["filename"]},
+    Filepath: {top_result["filepath"]},
+    Content: {top_result["content"]}
+    """

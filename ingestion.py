@@ -6,7 +6,6 @@ import time
 
 
 def setup_vector_db(path):
-    # Ensure folder exists
     path = Path(path)
     path.mkdir(exist_ok=True)
 
@@ -16,7 +15,6 @@ def setup_vector_db(path):
     vector_db.create_table("transcripts", schema=Transcript, exist_ok=True)
 
     return vector_db
-
 
 def ingest_docs_to_vector_db(table):
     files = list(DATA_PATH.glob("*.md"))
@@ -35,7 +33,6 @@ def ingest_docs_to_vector_db(table):
 
         doc_id = filepath.stem
 
-        # delete existing entry
         table.delete(f"doc_id = '{doc_id}'")
 
         table.add([
@@ -52,7 +49,6 @@ def ingest_docs_to_vector_db(table):
 
     print("\n[INFO] Ingestion complete!")
     
-
 if __name__ == "__main__":
     vector_db = setup_vector_db(VECTOR_DB_PATH)
     ingest_docs_to_vector_db(vector_db["transcripts"])
