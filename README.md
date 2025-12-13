@@ -21,7 +21,7 @@ The project is built as part of a lab assignment and demonstrates ingestion, vec
 
 * PydanticAI – AI agent & structured outputs
 * Azure Functions – serverless backend
-* FastAPI – API framework (lokalt)
+* FastAPI – API framework (locally)
 * Streamlit – frontend UI
 * LanceDB – vector database
 * Google Gemini – LLM & embeddings

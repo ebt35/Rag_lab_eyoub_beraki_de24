@@ -6,7 +6,7 @@ app = FastAPI()
 
 @app.get("/")
 async def hello_message():
-    return {"message": "Hello, welcome to The Youtuber RAG API!"}
+    return {"message": "Hello, welcome to The Youtuber RAGbot!"}
 
 @app.post(
     "/rag/query",
