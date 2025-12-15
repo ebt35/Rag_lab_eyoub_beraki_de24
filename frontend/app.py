@@ -58,7 +58,7 @@ def layout():
         )
         st.rerun()
         
-if st.button("Rensa chatt"):
+if st.button("ClearChat"):
     st.session_state.messages = []
     st.rerun()
 
